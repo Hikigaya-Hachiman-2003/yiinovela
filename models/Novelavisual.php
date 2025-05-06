@@ -60,8 +60,8 @@ class Novelavisual extends \yii\db\ActiveRecord
             'portada' => Yii::t('app', 'Portada'),
             'nombre' => Yii::t('app', 'Nombre'),
             'descripción' => Yii::t('app', 'Descripción'),
-            'tipos_idtipos' => Yii::t('app', 'Tipos Idtipos'),
-            'estudio_idestudio' => Yii::t('app', 'Estudio Idestudio'),
+            'tipos_idtipos' => Yii::t('app', 'Tipos'),
+            'estudio_idestudio' => Yii::t('app', 'Estudio'),
         ];
     }
 

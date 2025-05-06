@@ -1,7 +1,10 @@
 <?php
 
+use app\models\Estudio;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\Tipos;
 
 /** @var yii\web\View $this */
 /** @var app\models\Novelavisual $model */
@@ -29,13 +32,21 @@ use yii\widgets\ActiveForm;
     <?=
     $form->field($model, 'imageFile')->fileInput()->label('Selecionar portada') ?>
 
-    <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'nombre')->textInput(['maxlength' => true, 'placeholder'=>'Nombre de la Novela Visual', 'required'=> true]) ?>
 
-    <?= $form->field($model, 'descripción')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'descripción')->textarea(['maxlength' =>600, 'placeholder'=>'Ingrese la descripción...', 'require'=>true]) ?>
 
-    <?= $form->field($model, 'tipos_idtipos')->textInput() ?>
+    <?= $form->field($model, 'tipos_idtipos')->dropDownList(ArrayHelper::map(Tipos::find()->select(['idtipos', 'nombre'])
+                                                                                        ->orderBy('nombre')
+                                                                                        ->asArray()
+                                                                                        ->all(), 'idtipos', 'nombre'), ['prompt'=>'Selecione un Tipo de Novela', 'required'=>true]) 
+    ?>
 
-    <?= $form->field($model, 'estudio_idestudio')->textInput() ?>
+    <?= $form->field($model, 'estudio_idestudio')->dropDownList(ArrayHelper::map(Estudio::find()->select(['idestudio', 'nombre'])
+                                                                                        ->orderBy('nombre')
+                                                                                        ->asArray()
+                                                                                        ->all(), 'idestudio', 'nombre'), ['prompt'=>'Selecione un Estudio', 'required'=>true]) 
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
