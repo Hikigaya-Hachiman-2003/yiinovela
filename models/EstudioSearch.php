@@ -4,22 +4,21 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Novelavisual;
+use app\models\Estudio;
 
 /**
- * NovelavisualSearch represents the model behind the search form of `app\models\Novelavisual`.
+ * EstudioSearch represents the model behind the search form of `app\models\Estudio`.
  */
-class NovelavisualSearch extends Novelavisual
+class EstudioSearch extends Estudio
 {
-    
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['idnovela_visual', 'tipos_idtipos', 'estudio_idestudio'], 'integer'],
-            [['portada', 'nombre', 'descripción'], 'safe'],
+            [['idestudio'], 'integer'],
+            [['nombre', 'país', 'fundación'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class NovelavisualSearch extends Novelavisual
      */
     public function search($params, $formName = null)
     {
-        $query = Novelavisual::find();
+        $query = Estudio::find();
 
         // add conditions that should always apply here
 
@@ -60,14 +59,12 @@ class NovelavisualSearch extends Novelavisual
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'idnovela_visual' => $this->idnovela_visual,
-            'tipos_idtipos' => $this->tipos_idtipos,
-            'estudio_idestudio' => $this->estudio_idestudio,
+            'idestudio' => $this->idestudio,
         ]);
 
-        $query->andFilterWhere(['like', 'portada', $this->portada])
-            ->andFilterWhere(['like', 'nombre', $this->nombre])
-            ->andFilterWhere(['like', 'descripción', $this->descripción]);
+        $query->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'país', $this->país])
+            ->andFilterWhere(['like', 'fundación', $this->fundación]);
 
         return $dataProvider;
     }

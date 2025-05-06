@@ -4,9 +4,11 @@ namespace app\controllers;
 
 use app\models\Novelavisual;
 use app\models\NovelavisualSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * NovelavisualController implements the CRUD actions for Novelavisual model.
@@ -68,10 +70,27 @@ class NovelavisualController extends Controller
     public function actionCreate()
     {
         $model = new Novelavisual();
+        $message = '';
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'idnovela_visual' => $model->idnovela_visual]);
+            $transaction = Yii::$app->db->beginTransaction();
+            try{
+                if($model->load($this->request->post())){
+                    $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+                    if($model->save() && (!$model->imageFile || $model->upload())){
+                        $transaction->commit();
+                        return $this->redirect(['view', 'idnovela_visual' => $model->idnovela_visual]);
+                    }else{
+                        $message = 'Error al guardar la Novela Visual';
+                        $transaction->rollBack();
+                    }
+                }else{
+                    $message = 'Error al cargar la Novela Visual';
+                    $transaction->rollBack();
+                }
+            }catch(\Exception $e){
+                $transaction->rollBack();
+                $message = 'Error al guardar la Novela Visual'; 
             }
         } else {
             $model->loadDefaultValues();
@@ -79,6 +98,7 @@ class NovelavisualController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'message' => $message,
         ]);
     }
 
@@ -92,13 +112,20 @@ class NovelavisualController extends Controller
     public function actionUpdate($idnovela_visual)
     {
         $model = $this->findModel($idnovela_visual);
+        $message = '';
+        if($this->request->isPost && $model->load($this->request->post())){
+            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'idnovela_visual' => $model->idnovela_visual]);
+            if($model->save() && (!$model->imageFile || $model->upload())){
+                return $this->redirect(['view', 'idnovela_visual' => $model->idnovela_visual]);
+            }else{
+                $message = 'Error al guardar la pelicula';
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
+            'message' => $message,
         ]);
     }
 
@@ -111,8 +138,9 @@ class NovelavisualController extends Controller
      */
     public function actionDelete($idnovela_visual)
     {
-        $this->findModel($idnovela_visual)->delete();
-
+        $model = $this->findModel($idnovela_visual);
+        $model->deletePortada();
+        $model->delete();
         return $this->redirect(['index']);
     }
 

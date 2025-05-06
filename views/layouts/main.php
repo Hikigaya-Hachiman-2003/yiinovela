@@ -40,9 +40,18 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'Inicio', 'url' => ['/site/index']],
-            ['label' => 'Acerca de Nosotros', 'url' => ['/site/about']],
-            ['label' => 'Contactanos', 'url' => ['/site/contact']],
-            ['label' => 'Novela Visual', 'url' => ['/novelavisual/index']],
+            //['label' => 'Acerca de Nosotros', 'url' => ['/site/about']],
+            //['label' => 'Contactanos', 'url' => ['/site/contact']],
+            //['label' => 'Novela Visual', 'url' => ['/novelavisual/index']],
+            [
+                'label' => 'Gesstionar NV',
+                'items' =>[
+                    ['label' => 'Novela Visual', 'url' => ['/novelavisual/index']],
+                    ['label' => 'Estudio', 'url' => ['/estudio/index']],
+                    ['label' => 'Generos', 'url' => ['/generos/index']],
+                    ['label' => 'Tipos', 'url' => ['/tipos/index']],
+                ],
+            ],
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'

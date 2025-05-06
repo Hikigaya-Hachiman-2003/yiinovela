@@ -3,11 +3,13 @@
 namespace app\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "novela_visual".
  *
  * @property int $idnovela_visual
+ * @property string|null $portada
  * @property string|null $nombre
  * @property string|null $descripción
  * @property int $tipos_idtipos
@@ -20,7 +22,7 @@ use Yii;
  */
 class Novelavisual extends \yii\db\ActiveRecord
 {
-
+    public $imageFile;
 
     /**
      * {@inheritdoc}
@@ -36,13 +38,15 @@ class Novelavisual extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'descripción'], 'default', 'value' => null],
+            [['portada', 'nombre', 'descripción'], 'default', 'value' => null],
             [['tipos_idtipos', 'estudio_idestudio'], 'required'],
             [['tipos_idtipos', 'estudio_idestudio'], 'integer'],
+            [['portada'], 'string', 'max' => 255],
             [['nombre'], 'string', 'max' => 150],
             [['descripción'], 'string', 'max' => 600],
             [['estudio_idestudio'], 'exist', 'skipOnError' => true, 'targetClass' => Estudio::class, 'targetAttribute' => ['estudio_idestudio' => 'idestudio']],
             [['tipos_idtipos'], 'exist', 'skipOnError' => true, 'targetClass' => Tipos::class, 'targetAttribute' => ['tipos_idtipos' => 'idtipos']],
+            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
         ];
     }
 
@@ -53,12 +57,53 @@ class Novelavisual extends \yii\db\ActiveRecord
     {
         return [
             'idnovela_visual' => Yii::t('app', 'Idnovela Visual'),
+            'portada' => Yii::t('app', 'Portada'),
             'nombre' => Yii::t('app', 'Nombre'),
             'descripción' => Yii::t('app', 'Descripción'),
             'tipos_idtipos' => Yii::t('app', 'Tipos Idtipos'),
             'estudio_idestudio' => Yii::t('app', 'Estudio Idestudio'),
         ];
     }
+
+    public function upload()
+    {
+        if ($this->validate()) {
+            if ($this->isNewRecord) {
+                if (!$this->save(false)) {
+                    return false;
+                }
+            }
+
+            if ($this->imageFile instanceof UploadedFile) {
+                // Sanitiza el nombre base y agrega un prefijo único
+                $sanitizedBaseName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->imageFile->baseName);
+                $filename = uniqid() . '_' . $sanitizedBaseName . '.' . $this->imageFile->extension;
+                $path = Yii::getAlias('@webroot/portadas/') . $filename;
+
+                if ($this->imageFile->saveAs($path)) {
+                    if ($this->portada && $this->portada !== $filename) {
+                        $this->deletePortada();
+                    }
+
+                    $this->portada = $filename;
+                }
+            }
+
+            return $this->save(false);
+        }
+
+        return false;
+    }
+
+
+    public function deletePortada()
+    {
+        $path = Yii::getAlias('@webroot/portadas/') . $this->portada;
+        if (file_exists($path)) {
+            unlink($path);
+        }
+    }
+
 
     /**
      * Gets query for [[EstudioIdestudio]].
@@ -75,7 +120,7 @@ class Novelavisual extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|GenerosHasNovelaVisualQuery
      */
-    public function getGenerosHasNovelaVisuals()
+    /** */   public function getGenerosHasNovelaVisuals()
     {
         return $this->hasMany(GenerosHasNovelaVisual::class, ['novela_visual_idnovela_visual' => 'idnovela_visual']);
     }
@@ -108,5 +153,4 @@ class Novelavisual extends \yii\db\ActiveRecord
     {
         return new NovelavisualQuery(get_called_class());
     }
-
 }

@@ -30,6 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'idnovela_visual',
+            //'portada',
+            [
+                'attribute' => 'portada',
+                'format' => 'html',
+                'value' => function($model){
+                    return Html::img(Yii::getAlias('@web') . '/portadas/' . $model->portada, ['style' => 'width: 100px']);
+                }
+            ],
             'nombre',
             'descripción',
             'tipos_idtipos',
