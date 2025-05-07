@@ -50,6 +50,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     ['label' => 'Estudio', 'url' => ['/estudio/index']],
                     ['label' => 'Generos', 'url' => ['/generos/index']],
                     ['label' => 'Tipos', 'url' => ['/tipos/index']],
+                    ['label' => 'User', 'url' => ['/user/index']]
                 ],
             ],
             Yii::$app->user->isGuest
