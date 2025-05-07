@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Estudio;
+use app\models\Generos;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -48,6 +49,21 @@ use app\models\Tipos;
                                                                                         ->all(), 'idestudio', 'nombre'), ['prompt'=>'Selecione un Estudio', 'required'=>true]) 
     ?>
 
+    <div class="mb-3">
+        <?= Html::label('Selecione los generos', 'genders-search', ['class' =>'form-label']) ?>
+        <div class="input-group">
+            <input type="text" id= "genders-search" placeholder="Buscar genero..." class="form-control"> 
+            <a href="<?= Yii::$app->urlManager->createUrl(['generos/create'])?>" class="btn btn-secondary">
+            <i class="bi bi-bookmark-plus"></i>
+                Nuevo Genero
+            </a>
+        </div>
+        <?= Html::activeListBox($model, 'genders', ArrayHelper::map(Generos::find()->orderBy(['nombre'=>SORT_ASC])->all(),
+                                    'idgeneros', function($gender){
+                                        return $gender->nombre;
+                                    }), ['multiple'=>true, 'size'=>10, 'id'=>'genders-select', 'class'=>'form-control mt-2']) ?>
+    </div>
+
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
@@ -55,3 +71,17 @@ use app\models\Tipos;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+
+<script>
+    document.querySelector("#genders-search").addEventListener('input', function(){
+        let genders = document.querySelectorAll("#genders-select option");
+        genders.forEach(genders =>{
+            if(genders.text.toLowerCase().includes(this.value.toLowerCase())){
+                genders.style.display = 'block';
+            }else{
+                genders.style.display = 'none';
+            }
+        });
+    });
+</script>

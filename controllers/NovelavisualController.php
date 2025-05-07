@@ -8,6 +8,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -122,6 +123,8 @@ class NovelavisualController extends Controller
                 $message = 'Error al guardar la pelicula';
             }
         }
+
+        $model->genders = ArrayHelper::getColumn($model->getGenerosIdgeneros()->asArray()->all(), 'idgeneros');
 
         return $this->render('update', [
             'model' => $model,

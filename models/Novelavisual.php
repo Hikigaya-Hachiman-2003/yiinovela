@@ -23,6 +23,7 @@ use yii\web\UploadedFile;
 class Novelavisual extends \yii\db\ActiveRecord
 {
     public $imageFile;
+    public $genders = [];
 
     /**
      * {@inheritdoc}
@@ -44,6 +45,7 @@ class Novelavisual extends \yii\db\ActiveRecord
             [['portada'], 'string', 'max' => 255],
             [['nombre'], 'string', 'max' => 150],
             [['descripción'], 'string', 'max' => 600],
+            [['genders'], 'each', 'rule' => ['integer']], //datos de generos
             [['estudio_idestudio'], 'exist', 'skipOnError' => true, 'targetClass' => Estudio::class, 'targetAttribute' => ['estudio_idestudio' => 'idestudio']],
             [['tipos_idtipos'], 'exist', 'skipOnError' => true, 'targetClass' => Tipos::class, 'targetAttribute' => ['tipos_idtipos' => 'idtipos']],
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
@@ -62,6 +64,7 @@ class Novelavisual extends \yii\db\ActiveRecord
             'descripción' => Yii::t('app', 'Descripción'),
             'tipos_idtipos' => Yii::t('app', 'Tipos'),
             'estudio_idestudio' => Yii::t('app', 'Estudio'),
+            'genders' => 'Generos'
         ];
     }
 
@@ -104,6 +107,28 @@ class Novelavisual extends \yii\db\ActiveRecord
         }
     }
 
+    public function afterSave($insert, $changedAttributes){
+        parent::afterSave($insert, $changedAttributes);
+        
+        if(is_array($this->genders)){
+            foreach($this->genders as $generoId){
+                $generosHasNovelaVisuals = new GenerosHasNovelaVisual();
+                $generosHasNovelaVisuals->generos_idgeneros = $generoId;
+                $generosHasNovelaVisuals->novela_visual_idnovela_visual = $this->idnovela_visual;
+                $generosHasNovelaVisuals->save();
+            }
+        }
+    }
+
+    public function beforeDelete(){
+        if(!parent::beforeDelete()){
+            return false;
+        }
+
+        GenerosHasNovelaVisual::deleteAll(['novela_visual_idnovela_visual' => $this->idnovela_visual]);
+
+        return true;
+    }
 
     /**
      * Gets query for [[EstudioIdestudio]].
