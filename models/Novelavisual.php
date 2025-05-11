@@ -61,7 +61,7 @@ class Novelavisual extends \yii\db\ActiveRecord
             'idnovela_visual' => Yii::t('app', 'Idnovela Visual'),
             'portada' => Yii::t('app', 'Portada'),
             'nombre' => Yii::t('app', 'Nombre'),
-            'descripción' => Yii::t('app', 'Descripción'),
+            'descripción' => Yii::t('app', 'descripción'),
             'tipos_idtipos' => Yii::t('app', 'Tipos'),
             'estudio_idestudio' => Yii::t('app', 'Estudio'),
             'genders' => 'Generos'

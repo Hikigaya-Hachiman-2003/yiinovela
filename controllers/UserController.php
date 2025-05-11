@@ -7,10 +7,52 @@ use app\models\User;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use app\models\ChangePasswordForm;
 
 
 class UserController extends Controller
 {
+
+    public function behaviors(){
+        return[
+            'access' =>[
+                'class' => \yii\filters\AccessControl::class,
+                'only' => ['index', 'view', 'create', 'update', 'delete', 'reset-password', 'change-password'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => [ 'view'],
+                        'roles' =>['?'], //cualquiera que no inicie sesion
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => [ 'view', 'change-password'],
+                        'roles' =>['@'], //cualquiera que iniceie sesion 
+                        'matchCallback' => function($rule, $action){
+                            return Yii::$app->user->identity->role == 'user';
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'reset-password', 'change-password'],
+                        'roles' =>['@'], //cualquiera que iniceie sesion 
+                        'matchCallback' => function($rule, $action){
+                            return Yii::$app->user->identity->role == 'admin';
+                        }
+                    ]
+                    // vistas: 'actions' => ['index', 'view', 'create', 'update', 'delete', 'reset-password', 'change-password'],
+                ],
+            ],
+            'verbs' => [
+                'class' => \yii\filters\VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                    //'reset-password' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex(){
         $dataProvider = new ActiveDataProvider([
             'query' => User::find(),
@@ -71,6 +113,18 @@ class UserController extends Controller
         }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionChangePassword(){
+        $model = new  ChangePasswordForm();
+        if($model->load(Yii::$app->request->post()) && $model->changePassword()){
+            Yii::$app->session->setFlash('success', 'Password Changed Successfuly');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('change-password', [
+            'model' => $model,
+        ]);
     }
 
     protected function findModel($id){

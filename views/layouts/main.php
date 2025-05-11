@@ -5,6 +5,7 @@
 
 use app\assets\AppAsset;
 use app\widgets\Alert;
+use PHPUnit\Framework\MockObject\Builder\Identity;
 use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
@@ -43,22 +44,25 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             //['label' => 'Acerca de Nosotros', 'url' => ['/site/about']],
             //['label' => 'Contactanos', 'url' => ['/site/contact']],
             //['label' => 'Novela Visual', 'url' => ['/novelavisual/index']],
-            [
+            !Yii::$app->user->isGuest ? [
                 'label' => 'Gesstionar NV',
                 'items' =>[
                     ['label' => 'Novela Visual', 'url' => ['/novelavisual/index']],
                     ['label' => 'Estudio', 'url' => ['/estudio/index']],
                     ['label' => 'Generos', 'url' => ['/generos/index']],
                     ['label' => 'Tipos', 'url' => ['/tipos/index']],
-                    ['label' => 'User', 'url' => ['/user/index']]
+                    (!Yii::$app->user->isGuest && Yii::$app->user->identity->role != 'admin') ? '' : ['label' => 'User', 'url' => ['/user/index']] //linea para definir quien puede ver qué
                 ],
-            ],
+            ]: '',
+
+            Yii::$app->user->isGuest ? '': ['label' => 'Cambiar password', 'url' => ['/user/change-password']],
+
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
                     . Html::beginForm(['/site/logout'])
                     . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
+                        'Logout (' . Yii::$app->user->identity->apellido .' '. Yii::$app->user->identity->nombre .') '. Yii::$app->user->identity->role,
                         ['class' => 'nav-link btn btn-link logout']
                     )
                     . Html::endForm()
@@ -82,7 +86,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
+            <div class="col-md-6 text-center text-md-start">&copy; BBD Novelas Visuales <?= date('Y') ?></div>
             <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
         </div>
     </div>

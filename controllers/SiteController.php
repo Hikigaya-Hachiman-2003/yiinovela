@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Novelavisual;
+use app\models\Estudio;
 
 class SiteController extends Controller
 {
@@ -61,7 +63,12 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $novelas = Novelavisual::find()->all();
+        $estudios = Estudio::find()->all();
+        return $this->render('index', [
+            'novelas' => $novelas,
+            'estudios' => $estudios,
+        ]);
     }
 
     /**

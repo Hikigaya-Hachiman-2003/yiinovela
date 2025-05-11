@@ -18,7 +18,7 @@ class EstudioSearch extends Estudio
     {
         return [
             [['idestudio'], 'integer'],
-            [['nombre', 'país', 'fundación'], 'safe'],
+            [['portada','nombre', 'descripcion', 'país', 'fundación'], 'safe'],
         ];
     }
 
@@ -62,7 +62,9 @@ class EstudioSearch extends Estudio
             'idestudio' => $this->idestudio,
         ]);
 
-        $query->andFilterWhere(['like', 'nombre', $this->nombre])
+        $query->andFilterWhere(['like', 'portada', $this->portada])
+            ->andFilterWhere(['like', 'nombre', $this->nombre])
+            ->andFilterWhere(['like', 'descripcion', $this->descripcion])
             ->andFilterWhere(['like', 'país', $this->país])
             ->andFilterWhere(['like', 'fundación', $this->fundación]);
 

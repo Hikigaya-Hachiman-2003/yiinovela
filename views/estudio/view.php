@@ -30,7 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'idestudio',
+            'portada',
             'nombre',
+            'descripcion',
             'país',
             'fundación',
         ],

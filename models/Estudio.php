@@ -32,9 +32,11 @@ class Estudio extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'país', 'fundación'], 'default', 'value' => null],
+            [['portada','nombre', 'descripcion', 'país', 'fundación'], 'default', 'value' => null],
             [['nombre'], 'string', 'max' => 100],
             [['país', 'fundación'], 'string', 'max' => 45],
+            [['descripcion'], 'string', 'max' => 300],
+            [['portada'], 'string', 'max' => 200],
         ];
     }
 
@@ -45,7 +47,9 @@ class Estudio extends \yii\db\ActiveRecord
     {
         return [
             'idestudio' => Yii::t('app', 'Idestudio'),
+            'portada' => Yii::t('app', 'Portada'),
             'nombre' => Yii::t('app', 'Nombre'),
+            'descripcion' => Yii::t('app', 'Descripción'),
             'país' => Yii::t('app', 'País'),
             'fundación' => Yii::t('app', 'Fundación'),
         ];

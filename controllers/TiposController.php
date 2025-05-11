@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Tipos;
 use app\models\TiposSearch;
 use yii\web\Controller;
@@ -21,6 +22,34 @@ class TiposController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    // Acceso para usuarios autenticados con rol 'user'
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'roles' => ['@'],
+                        'matchCallback' => function($rule, $action){
+                            return Yii::$app->user->identity->role == 'user';
+                        }
+                    ],
+                    // Acceso completo para usuarios con rol 'admin'
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'roles' => ['@'],
+                        'matchCallback' => function($rule, $action){
+                            return Yii::$app->user->identity->role == 'admin';
+                        }
+                    ],
+                    // Bloquear todo lo demás explícitamente
+                    [
+                        'allow' => false,
+                    ],
+                ],
+            ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

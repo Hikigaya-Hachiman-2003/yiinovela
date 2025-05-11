@@ -20,7 +20,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'idestudio') ?>
 
+    <?= $form->field($model, 'portada') ?>
+
     <?= $form->field($model, 'nombre') ?>
+
+    <?= $form->field($model, 'descripcion') ?>
 
     <?= $form->field($model, 'país') ?>
 

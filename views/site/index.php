@@ -1,51 +1,87 @@
 <?php
 
+use yii\helpers\Html;
+
 /** @var yii\web\View $this */
 
-$this->title = 'My Yii Application';
+$this->title = 'Novelas Visuales';
 ?>
 <div class="site-index">
 
     <div class="jumbotron text-center bg-transparent mt-5 mb-5">
         <h1 class="display-4">BBD de Novelas Visuales</h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+        <p class="lead">Aquí encontraras una colección de varios datos de diversas novelas visuales.</p>
 
-        <p><a class="btn btn-lg btn-success" href="https://www.yiiframework.com">Get started with Yii</a></p>
+        <?php if (Yii::$app->user->isGuest): ?>
+            <p>
+                <a class="btn btn-lg btn-success" href="<?= \yii\helpers\Url::to(['/site/login']) ?>">
+                    Regístrate para acceder a más opciones
+                </a>
+            </p>
+        <?php endif; ?>
+
     </div>
 
     <div class="body-content">
 
         <div class="row">
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
+            <?php if (!empty($novelas)) : ?>
+                <div id="carouselExampleCaptions" class="carousel slide mb-5" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <?php foreach ($novelas as $index => $novela): ?>
+                            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="<?= $index ?>"
+                                class="<?= $index === 0 ? 'active' : '' ?>"
+                                aria-current="<?= $index === 0 ? 'true' : 'false' ?>"
+                                aria-label="Slide <?= $index + 1 ?>"></button>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="carousel-inner">
+                        <?php foreach ($novelas as $index => $novela): ?>
+                            <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                                <img src="<?= !empty($novela->portada) ? Yii::getAlias('@web/portadas/' . $novela->portada) : Yii::getAlias('@web/portadas/default-portada.jpg') ?>"
+                                    class="d-block w-100  img-fluid"
+                                    alt="<?= \yii\helpers\Html::encode($novela->nombre) ?>"
+                                    style="max-height: 400px; object-fit: cover;">
+                                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                                    <h5><?= \yii\helpers\Html::encode($novela->nombre) ?></h5>
+                                    <p><?= \yii\helpers\Html::encode($novela['descripción']) ?></p>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            <?php else: ?>
+                <p>No hay novelas visuales disponibles.</p>
+            <?php endif; ?>
+        </div>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+        <div>
+            <h2 class="mb-4">Estudios</h2>
 
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4 mb-3">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="https://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <?php foreach ($estudios as $estudio): ?>
+                    <div class="col">
+                        <div class="card h-100">
+                            <img src="<?= Yii::getAlias('@web/portadasestudios/' . $estudio->portada) ?>" class="card-img-top" alt="<?= Html::encode($estudio->nombre) ?>">
+                            <div class="card-body">
+                                <h4 class="card-title"><?= Html::encode($estudio->nombre) ?></h4>
+                                <h6 class="card-title">País: <?= Html::encode($estudio->país) ?></h6>
+                                <h6 class="card-title">Fecha de fundación: <?= Html::encode($estudio->fundación) ?></h6>
+                                <p class="card-text"><?= Html::encode($estudio->descripcion) ?></p>
+                                <a href="#" class="btn btn-primary">Ver más</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
