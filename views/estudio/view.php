@@ -38,4 +38,24 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <h2 class="mt-5">Novelas Visuales del Estudio</h2>
+
+    <?php if ($model->novelaVisuals): ?>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+            <?php foreach ($model->novelaVisuals as $novela): ?>
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="<?= !empty($novela->portada) ? Yii::getAlias('@web/portadas/' . $novela->portada) : Yii::getAlias('@web/portadas/default-portada.png') ?>" class="card-img-top" alt="<?= Html::encode($novela->nombre) ?>" style="height: 250px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= Html::encode($novela->nombre) ?></h5>
+                            <p class="card-text"><?= Html::encode($novela->descripción) ?></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="text-muted">Este estudio aún no tiene novelas visuales registradas.</p>
+    <?php endif; ?>
+
 </div>

@@ -12,6 +12,7 @@ use yii\widgets\Pjax;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Estudios');
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="estudio-index">

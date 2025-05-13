@@ -63,11 +63,25 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $backgroundDir = Yii::getAlias('@webroot/background');
+        $backgroundWeb = Yii::getAlias('@web/background');
+
+        $images = array_filter(scandir($backgroundDir), function ($file) {
+            return preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
+        });
+
+        $backgroundImage = null;
+        if (!empty($images)) {
+            $randomImage = $images[array_rand($images)];
+            $backgroundImage = $backgroundWeb . '/' . $randomImage;
+        }
+
         $novelas = Novelavisual::find()->all();
         $estudios = Estudio::find()->all();
         return $this->render('index', [
             'novelas' => $novelas,
             'estudios' => $estudios,
+            'backgroundImage' => $backgroundImage,
         ]);
     }
 
@@ -131,5 +145,23 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+
+    /**
+     * Acciones para ver la vista de estudio.
+     *
+     * 
+     */
+    public function actionViewEstudio($id)
+    {
+        $estudio = Estudio::findOne($id);
+        if (!$estudio) {
+            throw new \yii\web\NotFoundHttpException("El estudio no existe.");
+        }
+
+        return $this->render('view-estudio', [
+            'estudio' => $estudio,
+        ]);
     }
 }

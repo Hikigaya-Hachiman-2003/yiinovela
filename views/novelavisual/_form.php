@@ -30,8 +30,7 @@ use app\models\Tipos;
     <?php //$form->field($model, 'portada')->textInput(['maxlength' => true]) 
     ?>
 
-    <?=
-    $form->field($model, 'imageFile')->fileInput()->label('Selecionar portada') ?>
+    <?= $form->field($model, 'imageFile')->fileInput()->label('Selecionar portada') ?>
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true, 'placeholder'=>'Nombre de la Novela Visual', 'required'=> true]) ?>
 

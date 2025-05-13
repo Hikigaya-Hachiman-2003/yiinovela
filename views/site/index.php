@@ -6,6 +6,25 @@ use yii\helpers\Html;
 
 $this->title = 'Novelas Visuales';
 ?>
+
+<?php if (!empty($backgroundImage)): ?>
+    <style>
+        body {
+            background-image: url('<?= $backgroundImage ?>');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .site-index {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+<?php endif; ?>
+
 <div class="site-index">
 
     <div class="jumbotron text-center bg-transparent mt-5 mb-5">
@@ -39,7 +58,7 @@ $this->title = 'Novelas Visuales';
                     <div class="carousel-inner">
                         <?php foreach ($novelas as $index => $novela): ?>
                             <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                <img src="<?= !empty($novela->portada) ? Yii::getAlias('@web/portadas/' . $novela->portada) : Yii::getAlias('@web/portadas/default-portada.jpg') ?>"
+                                <img src="<?= !empty($novela->portada) ? Yii::getAlias('@web/portadas/' . $novela->portada) : Yii::getAlias('@web/portadas/default-portada.png') ?>"
                                     class="d-block w-100  img-fluid"
                                     alt="<?= \yii\helpers\Html::encode($novela->nombre) ?>"
                                     style="max-height: 400px; object-fit: cover;">
@@ -71,13 +90,15 @@ $this->title = 'Novelas Visuales';
                 <?php foreach ($estudios as $estudio): ?>
                     <div class="col">
                         <div class="card h-100">
-                            <img src="<?= Yii::getAlias('@web/portadasestudios/' . $estudio->portada) ?>" class="card-img-top" alt="<?= Html::encode($estudio->nombre) ?>">
+                            <img src="<?= !empty($estudio->portada) ? Yii::getAlias('@web/portadas/' . $estudio->portada) : Yii::getAlias('@web/portadas/default-portada.png') ?>">
                             <div class="card-body">
                                 <h4 class="card-title"><?= Html::encode($estudio->nombre) ?></h4>
                                 <h6 class="card-title">País: <?= Html::encode($estudio->país) ?></h6>
                                 <h6 class="card-title">Fecha de fundación: <?= Html::encode($estudio->fundación) ?></h6>
                                 <p class="card-text"><?= Html::encode($estudio->descripcion) ?></p>
-                                <a href="#" class="btn btn-primary">Ver más</a>
+                                <a href="<?= \yii\helpers\Url::to(['estudio/view', 'idestudio' => $estudio->idestudio]) ?>" class="btn btn-primary">
+                                    Ver más
+                                </a>
                             </div>
                         </div>
                     </div>

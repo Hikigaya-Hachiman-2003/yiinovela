@@ -10,7 +10,9 @@ use yii\widgets\ActiveForm;
 
 <div class="estudio-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => ['enctype' => 'multipart/form-data']
+    ]); ?>
 
     <?= $form->field($model, 'portada')->textInput(['maxlength' => true]) ?>
 
